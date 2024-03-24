@@ -19,7 +19,7 @@ Router.route("/getMe")
     .get(checkTokken, checkId, userControllers.getMe)
 
 Router.route("/login")
-    .post(checkTokken, checkId,userControllers.login)
+    .post(userControllers.login)
 
 Router.route("/logout")
     .post(checkTokken, checkId,userControllers.logout)

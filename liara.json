@@ -1,0 +1,5 @@
+{
+    "platform": "node",
+    "app": "landingshop",
+    "port": 5000
+}

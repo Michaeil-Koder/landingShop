@@ -179,7 +179,30 @@ exports.getAll = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-
+        const {email , phone , password}=req.body
+        const regExPhone = new RegExp("^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$", "g")
+        const regExEmail = new RegExp("[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+", "g")
+        if(!regExPhone.test(phone)&&phone!==undefined){
+            return res.status(403).send({message:"لطفا شماره تلفن خود را به درستی وارد نمایید"})
+        }else if(!regExEmail.test(email)&&email!==undefined){
+            return res.status(403).send({message:"لطفا ایمیل خود را به درستی وارد نمایید"})
+        }else if(phone!==undefined&&email!==undefined || phone.length===0&&email.length===0){
+            return res.status(403).send({message:"لطفا فرم را پر نمایید "})
+        }else if(password.length===0||password===undefined){
+            return res.status(403).send({message:"لطفا پسورد خود را به وارد نمایید"})
+        }
+        const finduser=await userModel.findOne({$or:[{email},{phone}]})
+        const checkPass=bcrypt.compareSync(password,finduser.password)
+        if(!checkPass){
+            return res.status(403).send({message:"لطفا پسورد خود را به درستی وارد نمایید"})
+        }
+        const tokken=jwt.sign({id:finduser._id},process.env.JWT_SECURITY,{
+            expiresIn:"5day"
+        })
+        res.setHeader("Set-Cookie",cookie.serialize("tokken",tokken,{
+            maxAge:60*60*24*5,
+            httpOnly:true
+        })).status(200).send({message:"ورود موفقیت آمیز بود"})
     } catch (err) {
         return res.status(err.status || 400).send({ message: "خطایی روی داده است" })
     }
