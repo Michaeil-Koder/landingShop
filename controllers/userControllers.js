@@ -5,7 +5,8 @@ const jwt = require("jsonwebtoken")
 const registerCheck = require("../validator/userValidator")
 require("dotenv").config()
 const bcrypt = require("bcrypt")
-const cookie=require("cookie")
+const cookie = require("cookie")
+const nodemailer = require("nodemailer")
 
 
 
@@ -38,16 +39,34 @@ exports.create = async (req, res) => {
         const countUserModel = await userModel.countDocuments()//length
 
         const newUser = await userModel.create({ name, username, email, phone, password: hash, role: countUserModel > 0 ? "USER" : "ADMIN", createdAt, updatedAt })//create
-        const userObj=newUser.toObject()
+        const userObj = newUser.toObject()
 
         const tokken = jwt.sign({//tokken
             id: newUser._id,
         }, process.env.JWT_SECURITY, {
             expiresIn: "5day"
         })
-        delete userObj._id
         delete userObj.password
-        res.setHeader("Set-Cookie",cookie.serialize("tokken",tokken),{httpOnly:true,maxAge:60*60*24*5}).send({ user:userObj })
+        res.setHeader("Set-Cookie", cookie.serialize("tokken", tokken), { httpOnly: true, maxAge: 60 * 60 * 24 * 5 }).send({ user: userObj })
+
+        let transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "michael.zare.1382@gmail.com",
+                pass: "cknh bkex lqvx bjii"
+            },
+        })
+        const mailOptions = {
+            from: "michael.zare.1382@gmail.com",
+            to: userObj.email,
+            subject: "ثبت نام موفقیت آمیز بود",
+            text: `سلام ${userObj.name} به سایت ما خوش آمدی❤️`
+        }
+        transporter.sendMail(mailOptions, async (err, info) => {
+            if (err) {
+                throw new Error(err.message)
+            }
+        })
     } catch (err) {
         return res.status(err.status || 400).send(err.message || { message: "خطایی روی داده است" })
     }
@@ -68,10 +87,10 @@ exports.Uplevel = async (req, res) => {
 
 exports.getOne = async (req, res) => {
     try {
-        const {id}=req.params
-        const findOneUser=await userModel.findById(id,"-password")
-        if(!findOneUser){
-            return res.status(404).send({message:"کاربری یافت نشد"})
+        const { id } = req.params
+        const findOneUser = await userModel.findById(id, "-password")
+        if (!findOneUser) {
+            return res.status(404).send({ message: "کاربری یافت نشد" })
         }
         res.send(findOneUser)
     } catch (err) {
@@ -80,28 +99,32 @@ exports.getOne = async (req, res) => {
 }
 exports.getMe = async (req, res) => {
     try {
-        const {_id}=req.body.user
-        const finduser=await userModel.findById(_id,"-password")
-        const HasBan=await banModel.findOne({user:_id})
-        if(HasBan){
-            return res.status(401).send({message:"شما بن هستید"})
-        }else if(!finduser){
-            return res.status(404).send({message:"کاربری یافت نشد"})
+        const { _id } = req.body.user
+        const finduser = await userModel.findById(_id, "-password")
+        const HasBan = await banModel.findOne({ user: _id })
+        if (HasBan) {
+            return res.status(401).send({ message: "شما بن هستید" })
+        } else if (!finduser) {
+            return res.status(404).send({ message: "کاربری یافت نشد" })
         }
         res.send(finduser)
     } catch (err) {
-        return res.status(err.status || 400).send(err.message||{ message: "خطایی روی داده است" })
+        return res.status(err.status || 400).send(err.message || { message: "خطایی روی داده است" })
     }
 }
 
 
 exports.remove = async (req, res) => {
     try {
-        const {id}=req.params
-        const finduser=await userModel.findById(id)
-        if(!finduser){
-            return res.status(404).send({message:"کاربری یافت نشد"})
+        const { id } = req.params
+        const finduser = await userModel.findById(id)
+        if (!finduser) {
+            return res.status(404).send({ message: "کاربری یافت نشد" })
+        }else if(req.body.user.createdAt>finduser.createdAt && finduser.role==="ADMIN"){
+            return res.status(400).send({ message: "شما نمی توانید ادمین قدیمی تر را حذف کنید" })
         }
+        await userModel.findByIdAndDelete(id)
+        res.send({message:"حذف با موفقیت انجام شد"})
     } catch (err) {
         return res.status(err.status || 400).send({ message: "خطایی روی داده است" })
     }

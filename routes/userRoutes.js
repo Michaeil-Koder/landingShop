@@ -13,7 +13,7 @@ Router.route("/register")
 
 
 Router.route("/getAll")
-    .get(userControllers.getAll)
+    .get(checkTokken, checkId, checkAdmin, userControllers.getAll)
 
 Router.route("/getMe")
     .get(checkTokken, checkId, userControllers.getMe)

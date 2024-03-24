@@ -2,10 +2,10 @@ const mongoose=require("mongoose")
 
 
 const checkId = (req, res , next) => {
-    const { _id } = req.body.user
+    const id = req.body.user?._id
     const ParamsId=req.params.id
-    if(_id!==undefined){
-        const isValidId = mongoose.Types.ObjectId.isValid(_id)
+    if(id!==undefined){
+        const isValidId = mongoose.Types.ObjectId.isValid(id)
         if (!isValidId) {
             return res.status(401).send({ message: "This Id Not Valid" })
         }
