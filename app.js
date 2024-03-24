@@ -20,7 +20,7 @@ server.use("/user",userRoutes)
 server.get("/",(req,res)=>{
     res.send(`<h1>hellow michaeil</h1>
     <p>welcome to my site</p>
-    <a>log in</a>`)
+    <a>log out</a>`)
 })
 
 // error Handller
