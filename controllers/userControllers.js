@@ -22,11 +22,11 @@ exports.create = async (req, res) => {
             return res.status(400).send({ message: "لطفا شماره را صحیح وارد کنید" })
         }
         const finduser = await userModel.findOne({ $or: [{ email }, { phone }] })
-        // const HasBan=await banModel.findOne({user:finduser._id})
+        const HasBan=await banModel.findOne({$or:[{user:finduser._id},{email:finduser.email},{phone:finduser.phone}]})
 
-        // if (HasBan) {
-        //     return res.status(401).send({ message: "کاربر بن شده است" })
-        // }
+        if (HasBan) {
+            return res.status(401).send({ message: "کاربر بن شده است" })
+        }
         if (finduser) {
             return res.status(400).send({ message: "این کاربر قبلا ثبت نام کرده است" })
         }
@@ -75,6 +75,28 @@ exports.create = async (req, res) => {
 
 
 exports.Uplevel = async (req, res) => {
+    try {
+        const {id}=req.params
+        const finduser = await userModel.findById(id)
+        if(!finduser){
+            return res.status(404).send({message:"کاربری یافت نشد"})
+        }else if(finduser.role==="ADMIN"){
+            return res.status(400).send({message:"این کاربر با نقش ادمین در سایت ذخیره شده است"})
+        }
+        const HasBan=await banModel.findOne({$or:[{user:finduser._id},{email:finduser.email},{phone:finduser.phone}]})
+        if(HasBan){
+            return res.status(400).send({message:"این کاربر بن شده است ، لطفا آن را از بن خارج کنید"})
+        }
+        const updatedAt=moment().format("jYYYY/jMM/jDD HH:mm:ss")
+        const upUser=await userModel.findByIdAndUpdate(id,{role:"ADMIN",updatedAt}).select("-password -__v")
+        res.send(upUser)
+    } catch (err) {
+        return res.status(err.status || 400).send({ message: "خطایی روی داده است" })
+    }
+}
+
+
+exports.Downgrade = async (req, res) => {
     try {
 
     } catch (err) {

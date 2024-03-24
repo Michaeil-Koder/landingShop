@@ -24,6 +24,10 @@ Router.route("/login")
 Router.route("/logout")
     .put(userControllers.logout)
 
+Router.route("/:id/Downgrade")
+    .put(checkTokken,checkId,checkAdmin,userControllers.Downgrade)
+
+
 Router.route("/:id")
     .put(checkTokken, checkId, checkAdmin, userControllers.Uplevel)
     .get(checkTokken, checkId, checkAdmin, userControllers.getOne)
