@@ -7,15 +7,15 @@ const checkId = (req, res , next) => {
     if(id!==undefined){
         const isValidId = mongoose.Types.ObjectId.isValid(id)
         if (!isValidId) {
-            return res.status(401).send({ message: "This Id Not Valid" })
+            return res.status(400).send({ message: "This Id Not Valid" })
         }
     }else{
-        return res.status(300).send({message:"Please LogIn Or SignIn"})
+        return res.status(401).send({message:"Please LogIn Or SignIn"})
     }
     if(ParamsId!==undefined){
         const isValidParamsId = mongoose.Types.ObjectId.isValid(ParamsId)
         if (!isValidParamsId) {
-            return res.status(401).send({ message: "This Id Params Not Valid" })
+            return res.status(400).send({ message: "This Id Params Not Valid" })
         }
     }
     next()
