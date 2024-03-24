@@ -133,7 +133,12 @@ exports.remove = async (req, res) => {
 
 exports.getAll = async (req, res) => {
     try {
-
+        const id=req.body.user?._id
+        const allUser=await userModel.find({_id:{$ne:id}},"-password -__v").lean().sort({_id:-1})
+        if(allUser.length===0){
+            res.status(404).send({message:"کاربری ایجاد نشده است"})
+        }
+        res.send(allUser)
     } catch (err) {
         return res.status(err.status || 400).send({ message: "خطایی روی داده است" })
     }
