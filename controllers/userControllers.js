@@ -187,7 +187,7 @@ exports.login = async (req, res) => {
 
 exports.logout = async (req, res) => {
     try {
-
+        res.setHeader("Set-Cookie", cookie.serialize("tokken", ''), { maxAge: 0}).send({message:"با موفقیت خارج شدید"})
     } catch (err) {
         return res.status(err.status || 400).send({ message: "خطایی روی داده است" })
     }

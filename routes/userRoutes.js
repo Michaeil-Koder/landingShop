@@ -19,10 +19,10 @@ Router.route("/getMe")
     .get(checkTokken, checkId, userControllers.getMe)
 
 Router.route("/login")
-    .put(userControllers.login)
+    .post(checkTokken, checkId,userControllers.login)
 
 Router.route("/logout")
-    .put(userControllers.logout)
+    .post(checkTokken, checkId,userControllers.logout)
 
 Router.route("/:id/Downgrade")
     .put(checkTokken,checkId,checkAdmin,userControllers.Downgrade)

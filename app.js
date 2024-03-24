@@ -2,10 +2,14 @@ const exprees=require("express")
 require("dotenv").config()
 const server=exprees()
 const cors=require("cors")
+const cookieParser = require('cookie-parser');
+
+
 server.use(exprees.json())
 server.use(exprees.urlencoded({extended:false}))
 // middleware
 server.use(cors())
+server.use(cookieParser())
 
 // require Routes
 const userRoutes=require("./routes/userRoutes")

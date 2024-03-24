@@ -35,10 +35,6 @@ const schema = new mongoose.Schema({
         type:String,
         default:"USER"
     },
-    logIn:{
-        type:String,
-        default:true
-    },
     createdAt:{
         type:String,
     },
