@@ -47,7 +47,7 @@ exports.create = async (req, res) => {
             expiresIn: "5day"
         })
         delete userObj.password
-        res.setHeader("Set-Cookie", cookie.serialize("tokken", tokken), { httpOnly: true, maxAge: 60 * 60 * 24 * 5 }).send({ user: userObj })
+        res.setHeader("Set-Cookie", cookie.serialize("tokken", tokken), { httpOnly: true, maxAge: 60 * 60 * 24 * 5 , path:"/"}).send({ user: userObj })
 
         let transporter = nodemailer.createTransport({
             service: "gmail",
@@ -186,9 +186,9 @@ exports.login = async (req, res) => {
             return res.status(403).send({message:"لطفا شماره تلفن خود را به درستی وارد نمایید"})
         }else if(!regExEmail.test(email)&&email!==undefined){
             return res.status(403).send({message:"لطفا ایمیل خود را به درستی وارد نمایید"})
-        }else if(phone!==undefined&&email!==undefined || phone.length===0&&email.length===0){
+        }else if(phone===undefined&&email===undefined || phone?.length===0&&email?.length===0){
             return res.status(403).send({message:"لطفا فرم را پر نمایید "})
-        }else if(password.length===0||password===undefined){
+        }else if(password?.length===0||password===undefined){
             return res.status(403).send({message:"لطفا پسورد خود را به وارد نمایید"})
         }
         const finduser=await userModel.findOne({$or:[{email},{phone}]})
@@ -201,16 +201,17 @@ exports.login = async (req, res) => {
         })
         res.setHeader("Set-Cookie",cookie.serialize("tokken",tokken,{
             maxAge:60*60*24*5,
-            httpOnly:true
+            httpOnly:true,
+            path:"/"
         })).status(200).send({message:"ورود موفقیت آمیز بود"})
     } catch (err) {
-        return res.status(err.status || 400).send({ message: "خطایی روی داده است" })
+        return res.status(err.status || 400).send(err.message||{ message: "خطایی روی داده است" })
     }
 }
 
 exports.logout = async (req, res) => {
     try {
-        res.setHeader("Set-Cookie", cookie.serialize("tokken", ''), { maxAge: 0}).send({message:"با موفقیت خارج شدید"})
+        res.setHeader("Set-Cookie", cookie.serialize("tokken", ''), {path:"/", maxAge: 0}).send({message:"با موفقیت خارج شدید"})
     } catch (err) {
         return res.status(err.status || 400).send({ message: "خطایی روی داده است" })
     }
