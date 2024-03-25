@@ -5,13 +5,15 @@ const schema={
         type: "string",
         required: true,
         min: 4,
-        max: 15
+        max: 15,
+        unique:true
     },
     href: {
         type: "string",
         required: true,
         min: 4,
-        max: 20
+        max: 20,
+        unique:true
     },
     price: {
         type: "number",
@@ -34,11 +36,15 @@ const schema={
         required: true,
     },
     information: {
-        type: "array",
+        type: "object",
         required: true,
     },
     option: {
-        type: "array",
+        type: "object",
+        required: true,
+    },
+    sizes: {
+        type: "object",
         required: true,
     },
     $$strict:"remove"

@@ -50,11 +50,19 @@ const schema = new mongoose.Schema({
         required: true,
     },
     information: {
-        type: Array,
+        type: Object,
         required: true,
     },
     option: {
-        type: Array,
+        type: Object,
+        required: true,
+    },
+    sizes: {
+        colors: {
+            type: Array,
+            required: false,
+        },
+        type: Object,
         required: true,
     },
     createdAt: {
@@ -70,6 +78,11 @@ const schema = new mongoose.Schema({
 schema.virtual("CommentVirtual", {
     localField: "_id",
     ref: "Comment",
+    foreignField: "product"
+})
+schema.virtual("ColorSize", {
+    localField: "_id",
+    ref: "Color",
     foreignField: "product"
 })
 

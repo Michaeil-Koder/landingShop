@@ -18,6 +18,7 @@ const userRoutes=require("./routes/userRoutes")
 const banRoutes=require("./routes/banRoutes")
 const productRoutes=require("./routes/productRoutes")
 const pageRoutes=require("./routes/pageRoutes")
+const sizeRoutes=require("./routes/sizeRoutes")
 
 // main route
 server.use("/",pageRoutes)
@@ -27,6 +28,7 @@ server.use("/",pageRoutes)
 server.use("/landing/user",userRoutes)
 server.use("/landing/ban",banRoutes)
 server.use("/landing/product",productRoutes)
+server.use("/landing/size",sizeRoutes)
 
 
 // error Handller

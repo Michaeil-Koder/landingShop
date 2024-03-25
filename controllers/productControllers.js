@@ -33,26 +33,26 @@ deleteImg = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        let { title, href, price, description, disCount, category, remaining, information, option, user } = req.body
+        let { title, href, price,sizes, description, disCount, category, remaining, information, option, user } = req.body
         price = Number(price)
         disCount = Number(disCount)
         remaining = Number(remaining)
         information = JSON.parse(information)
+        sizes = JSON.parse(sizes)
         option = JSON.parse(option)
 
-        const check = productCheck({ title, href, price, description, disCount: disCount ? disCount : 0, category, remaining, information, option })
+        const check = productCheck({ title,sizes, href, price, description, disCount: disCount ? disCount : 0, category, remaining, information, option })
         if (check !== true) {
             await deleteImg(req, res)
             return res.status(405).send(check)
         }
         const covers = []
         req.files.forEach((file) => {
-            covers.push(`/public/products/covers/${file.filename}`)
+            covers.push(`/products/covers/${file.filename}`)
         })
         const createdAt = moment().format("jYYYY/jMM/jDD HH:mm:ss")
         const updatedAt = moment().format("jYYYY/jMM/jDD HH:mm:ss")
-        const newProduct = await productModel.create({ title, href, price, covers, description, disCount: disCount ? disCount : 0, category, remaining, information, option, creator: user._id, createdAt, updatedAt })
-        console.log("inja,");
+        const newProduct = await productModel.create({ title, href, price, covers, description, disCount: disCount ? disCount : 0, category, remaining, information, option, sizes ,creator: user._id, createdAt, updatedAt })
         res.status(201).send(newProduct)
     } catch (err) {
         await deleteImg(req, res)
