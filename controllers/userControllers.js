@@ -25,7 +25,7 @@ exports.create = async (req, res) => {
         const HasBan=await banModel.findOne({$or:[{user:finduser._id},{email:finduser.email},{phone:finduser.phone}]})
 
         if (HasBan) {
-            return res.status(401).send({ message: "کاربر بن شده است" })
+            return res.status(401).send({ message: "متاسفیم این ایمیل یا شماره توسط مدیر بن شده است." })
         }
         if (finduser) {
             return res.status(400).send({ message: "این کاربر قبلا ثبت نام کرده است" })
@@ -136,7 +136,7 @@ exports.getMe = async (req, res) => {
         const finduser = await userModel.findById(_id, "-password")
         const HasBan = await banModel.findOne({ user: _id })
         if (HasBan) {
-            return res.status(401).send({ message: "شما بن هستید" })
+            return res.status(401).send({ message: "متاسفیم شما توسط مدیر بن شده اید." })
         } else if (!finduser) {
             return res.status(404).send({ message: "کاربری یافت نشد" })
         }
@@ -192,8 +192,11 @@ exports.login = async (req, res) => {
             return res.status(403).send({message:"لطفا پسورد خود را به وارد نمایید"})
         }
         const finduser=await userModel.findOne({$or:[{email},{phone}]})
+        const HasBan=await banModel.findOne({$or:[{email},{phone},{user:finduser._id}]})
         const checkPass=bcrypt.compareSync(password,finduser.password)
-        if(!checkPass){
+        if(HasBan){
+            return res.status(403).send({message:"متاسفیم شما توسط مدیر بن شده اید."})
+        }else if(!checkPass){
             return res.status(403).send({message:"لطفا پسورد خود را به درستی وارد نمایید"})
         }
         const tokken=jwt.sign({id:finduser._id},process.env.JWT_SECURITY,{

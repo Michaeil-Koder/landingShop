@@ -13,13 +13,13 @@ server.use(cookieParser())
 
 // require Routes
 const userRoutes=require("./routes/userRoutes")
+const banRoutes=require("./routes/banRoutes")
 
 // Routes
 
 server.use("/user",userRoutes)
-server.get("/",(req,res)=>{
-    res.send("<h1>hello welcom</h1>")
-})
+server.use("/ban",banRoutes)
+
 
 // error Handller
 server.use((err,req,res,next)=>{
