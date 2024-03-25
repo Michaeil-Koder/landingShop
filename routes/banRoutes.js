@@ -10,6 +10,7 @@ const checkTokken = require("../middleware/checkTokken")
 
 Router.route("/user/:id")
     .post(checkTokken,checkId,checkAdmin,banControllers.ban)
+    .delete(checkTokken,checkId,checkAdmin,banControllers.removeBan)
 
 
 module.exports = Router

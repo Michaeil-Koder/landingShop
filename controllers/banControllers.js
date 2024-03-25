@@ -30,3 +30,18 @@ exports.ban=async(req,res)=>{
         return res.status(400).send({message:"خطایی روی داده است"})
     }
 }
+
+
+exports.removeBan=async(req,res)=>{
+    try{
+        const {id}=req.params
+        const HasBan=await banModel.findOneAndDelete({user:id})
+        if(!HasBan){
+            return res.status(404).send({message:"این کاربر در لیست بن شدگان وجود ندارد"})
+        }
+
+        res.send({message:"کاربر با موفقیت از بن خارج شد"})
+    }catch(err){
+        return res.status(400).send({message:"خطایی روی داده است"})
+    }
+}
