@@ -48,7 +48,7 @@ exports.create = async (req, res) => {
         }
         const covers = []
         req.files.forEach((file) => {
-            covers.push(`/products/covers/${file.filename}`)
+            covers.push(`/${file.filename}`)
         })
         const createdAt = moment().format("jYYYY/jMM/jDD HH:mm:ss")
         const updatedAt = moment().format("jYYYY/jMM/jDD HH:mm:ss")
