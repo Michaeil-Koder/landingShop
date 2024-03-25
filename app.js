@@ -17,6 +17,9 @@ const userRoutes=require("./routes/userRoutes")
 // Routes
 
 server.use("/user",userRoutes)
+server.get("/",(req,res)=>{
+    res.send("<h1>hello welcom</h1>")
+})
 
 // error Handller
 server.use((err,req,res,next)=>{
