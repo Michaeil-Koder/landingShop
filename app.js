@@ -10,15 +10,23 @@ server.use(exprees.urlencoded({extended:false}))
 // middleware
 server.use(cors())
 server.use(cookieParser())
+server.use(exprees.static("./views"))
+server.use(exprees.static("./public"))
 
 // require Routes
 const userRoutes=require("./routes/userRoutes")
 const banRoutes=require("./routes/banRoutes")
+const productRoutes=require("./routes/productRoutes")
+// const pageRoutes=require("./routes/pageRoutes")
+
+// main route
+// server.use("/",pageRoutes)
 
 // Routes
 
-server.use("/user",userRoutes)
-server.use("/ban",banRoutes)
+server.use("/landing/user",userRoutes)
+server.use("/landing/ban",banRoutes)
+server.use("/landing/product",productRoutes)
 
 
 // error Handller

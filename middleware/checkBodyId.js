@@ -12,6 +12,15 @@ deleteImg = async (req, res) => {
             console.log(err);
         }
 
+    } else if (req.files) {
+        req.files.forEach(async(file) => {
+            try {
+                const imagePath = path.resolve(__dirname, '..', file.path);
+                await fsPromises.unlink(`${imagePath}`);
+            } catch (err) {
+                console.log(err);
+            }
+        })
     }
 };
 
