@@ -17,10 +17,10 @@ server.use(exprees.static("./public"))
 const userRoutes=require("./routes/userRoutes")
 const banRoutes=require("./routes/banRoutes")
 const productRoutes=require("./routes/productRoutes")
-// const pageRoutes=require("./routes/pageRoutes")
+const pageRoutes=require("./routes/pageRoutes")
 
 // main route
-// server.use("/",pageRoutes)
+server.use("/",pageRoutes)
 
 // Routes
 
