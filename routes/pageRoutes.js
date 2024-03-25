@@ -11,6 +11,8 @@ const checkTokken = require("../middleware/checkTokken")
 
 Router.route("/page/login")
     .get(pageControllers.login)
+Router.route("/page/404")
+    .get(pageControllers.notFound)
 
 
 module.exports = Router

@@ -11,6 +11,7 @@ const checkTokken=async(req,res,next)=>{
             return next()
         }else if(authHeader[1].length===0){
             return res.status(401).send({message:"لطفا وارد شوید یا ثبت کنید"})
+            // return res.redirect("/page/login")
         }
         const idTokken=jwt.verify(authHeader[1],process.env.JWT_SECURITY)
         const user=await userModel.findById(idTokken.id,"-password")

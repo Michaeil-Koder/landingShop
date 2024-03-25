@@ -10,7 +10,8 @@ const checkId = (req, res , next) => {
             return res.status(400).send({ message: "This Id Not Valid" })
         }
     }else{
-        return res.status(401).send({message:"Please LogIn Or SignIn"})
+        // return res.status(401).send({message:"لطفا وارد شوید یا ثبت کنید"})
+        return res.redirect("/page/login")
     }
     if(ParamsId!==undefined){
         const isValidParamsId = mongoose.Types.ObjectId.isValid(ParamsId)
