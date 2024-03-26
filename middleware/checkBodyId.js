@@ -26,13 +26,13 @@ deleteImg = async (req, res) => {
 
 const checkBodyId = async(req, res, next) => {
     try {
-        const { courseID, creator, category, mainCommentID, commentID, adminID } = req.body
+        const { product, creator, category, mainCommentID, commentID, adminID , size} = req.body
         const { sessionID } = req.params
-        if (courseID !== undefined && courseID !== "") {
-            const checkID = mongoose.Types.ObjectId.isValid(courseID)
+        if (product !== undefined && product !== "") {
+            const checkID = mongoose.Types.ObjectId.isValid(product)
             if (!checkID) {
                 await deleteImg(req)
-                return res.status(423).send({ message: "courseID Not Valid" })
+                return res.status(423).send({ message: "product Not Valid" })
             }
         } else if (creator !== undefined && creator !== "") {
             const checkID = mongoose.Types.ObjectId.isValid(creator)
@@ -69,6 +69,12 @@ const checkBodyId = async(req, res, next) => {
             if (!checkID) {
                 await deleteImg(req)
                 return res.status(423).send({ message: "adminID Not Valid" })
+            }
+        }else if (size !== undefined && size !== "") {
+            const checkID = mongoose.Types.ObjectId.isValid(size)
+            if (!checkID) {
+                await deleteImg(req)
+                return res.status(423).send({ message: "size Not Valid" })
             }
         }
         next()

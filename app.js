@@ -20,6 +20,7 @@ const productRoutes=require("./routes/productRoutes")
 const pageRoutes=require("./routes/pageRoutes")
 const sizeRoutes=require("./routes/sizeRoutes")
 const colorRoutes=require("./routes/colorRoutes")
+const categoryRoutes=require("./routes/categoryRoutes")
 
 // main route
 server.use("/",pageRoutes)
@@ -31,6 +32,7 @@ server.use("/landing/ban",banRoutes)
 server.use("/landing/product",productRoutes)
 server.use("/landing/size",sizeRoutes)
 server.use("/landing/color",colorRoutes)
+server.use("/landing/category",categoryRoutes)
 
 
 // error Handller

@@ -10,7 +10,7 @@ const checkId = require("../middleware/checkId")
 const checkTokken = require("../middleware/checkTokken")
 
 Router.route("/create")
-    .post(checkTokken,checkId,checkAdmin,uploader({storage,limits:{fileSize:1024*1024*5}}).array("cover"),checkTokken,productControllers.create)
+    .post(checkTokken,checkId,checkAdmin,uploader({storage,limits:{fileSize:1024*1024*5}}).array("cover"),checkTokken,checkBodyId,productControllers.create)
 
 
 module.exports = Router

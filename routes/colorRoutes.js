@@ -8,9 +8,9 @@ const checkId = require("../middleware/checkId")
 const checkTokken = require("../middleware/checkTokken")
 
 Router.route("/create")
-    .post(checkTokken,checkId,checkAdmin,colorControllers.create)
+    .post(checkTokken,checkId,checkBodyId,checkAdmin,colorControllers.create)
 Router.route("/:id/remove")
-    .delete(checkTokken,checkId,checkAdmin,colorControllers.remove)
+    .delete(checkTokken,checkId,checkBodyId,checkAdmin,colorControllers.remove)
 
 
 module.exports = Router

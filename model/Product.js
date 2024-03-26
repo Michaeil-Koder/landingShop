@@ -35,11 +35,11 @@ const schema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    // category: {
-    //     type: mongoose.Types.ObjectId,
-    //     ref: "Category",
-    //     required: true,
-    // },
+    category: {
+        type: mongoose.Types.ObjectId,
+        ref: "Category",
+        required: true,
+    },
     creator: {
         type: mongoose.Types.ObjectId,
         ref: "User",
@@ -54,14 +54,6 @@ const schema = new mongoose.Schema({
         required: true,
     },
     option: {
-        type: Object,
-        required: true,
-    },
-    sizes: {
-        colors: {
-            type: Array,
-            required: false,
-        },
         type: Object,
         required: true,
     },
