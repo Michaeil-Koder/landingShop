@@ -1,11 +1,10 @@
 const productModel = require("../model/Product")
+const colorModel = require("../model/Colors")
+const commentModel=require("../model/Comment")
 const moment = require("moment-jalaali")
-const jwt = require("jsonwebtoken")
+
 const productCheck = require("../validator/productValidator")
 require("dotenv").config()
-const bcrypt = require("bcrypt")
-const cookie = require("cookie")
-const nodemailer = require("nodemailer")
 const fsPromises = require('fs').promises;
 const path = require('path');
 
@@ -128,13 +127,13 @@ exports.RelatedProduct = async (req, res) => {
                 {
                     path: "ColorSize",
                     select: "name remaining price size",
-                    populate: { path: "size", select: "name" }
+                    populate: {path: "size", select: "name"}
                 },
-                { path: "category", select: "title href" },
-                { path: "creator", select: "name username email" }
+                {path: "category", select: "title href"},
+                {path: "creator", select: "name username email"}
             ])
             .lean()
-            .sort({ _id: -1 })
+            .sort({_id: -1})
         findRelProduct = findRelProduct.filter(product => product.category.href === findbyHref.category.href)
         res.send(findRelProduct)
     } catch (err) {
@@ -144,7 +143,15 @@ exports.RelatedProduct = async (req, res) => {
 
 exports.remove = async (req, res) => {
     try {
-
+        const {id}=req.params
+        const findProduct=await productModel.findById(id)
+        if (!findProduct){
+            return res.status(404).send({message:"این محصول یافت نشد"})
+        }
+        await colorModel.deleteMany({product: findProduct._id})
+        await commentModel.deleteMany({product: findProduct._id})
+        await productModel.deleteOne({_id:id})
+        res.send({message:"با موفقیت حذف شد"})
     } catch (err) {
         return res.status(400).send({message: "خطایی روی داده است"})
     }
