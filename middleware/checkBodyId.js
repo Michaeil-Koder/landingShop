@@ -1,9 +1,9 @@
-const { mongoose } = require("../model/User")
+const mongoose=require("mongoose")
 
 const fsPromises = require('fs').promises;
 const path = require('path');
 
-deleteImg = async (req, res) => {
+const deleteImg = async (req, res) => {
     if (req.file) {
         const imagePath = path.resolve(__dirname, '..', req.file.path);
         try {

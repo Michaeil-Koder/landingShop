@@ -9,7 +9,7 @@ const nodemailer = require("nodemailer")
 const fsPromises = require('fs').promises;
 const path = require('path');
 
-deleteImg = async (req, res) => {
+const deleteImg = async (req, res) => {
     if (req.file) {
         const imagePath = path.resolve(__dirname, '..', req.file.path);
         try {
@@ -33,18 +33,31 @@ deleteImg = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        let { title, href, price,sizes, description, disCount, category, remaining, information, option, user } = req.body
-        price = Number(price)
+        let {title, href, description, disCount, category, information, option, user} = req.body
         disCount = Number(disCount)
-        remaining = Number(remaining)
         information = JSON.parse(information)
-        sizes = JSON.parse(sizes)
         option = JSON.parse(option)
 
-        const check = productCheck({ title,sizes, href, price, description, disCount: disCount ? disCount : 0, category, remaining, information, option })
+        const check = productCheck({
+            title,
+            href,
+            description,
+            disCount: disCount ? disCount : 0,
+            category,
+            information,
+            option
+        })
+        const uniqueHref = await productModel.findOne({href})
+        const uniqueTitle = await productModel.findOne({title})
         if (check !== true) {
             await deleteImg(req, res)
             return res.status(405).send(check)
+        } else if (uniqueHref) {
+            await deleteImg(req, res)
+            return res.status(403).send({message: "این لینک وجود دارد"})
+        } else if (uniqueTitle) {
+            await deleteImg(req, res)
+            return res.status(403).send({message: "این عنوان وجود دارد"})
         }
         const covers = []
         req.files.forEach((file) => {
@@ -52,11 +65,23 @@ exports.create = async (req, res) => {
         })
         const createdAt = moment().format("jYYYY/jMM/jDD HH:mm:ss")
         const updatedAt = moment().format("jYYYY/jMM/jDD HH:mm:ss")
-        const newProduct = await productModel.create({ title, href, price, covers, description, disCount: disCount ? disCount : 0, category, remaining, information, option, sizes ,creator: user._id, createdAt, updatedAt })
+        const newProduct = await productModel.create({
+            title,
+            href,
+            covers,
+            description,
+            disCount: disCount ? disCount : 0,
+            category,
+            information,
+            option,
+            creator: user._id,
+            createdAt,
+            updatedAt
+        })
         res.status(201).send(newProduct)
     } catch (err) {
         await deleteImg(req, res)
-        return res.status(400).send(err.message || { message: "خطایی روی داده است" })
+        return res.status(400).send(err.message || {message: "خطایی روی داده است"})
     }
 }
 
@@ -64,6 +89,6 @@ exports.balhbalh = async (req, res) => {
     try {
 
     } catch (err) {
-        return res.status(400).send({ message: "خطایی روی داده است" })
+        return res.status(400).send({message: "خطایی روی داده است"})
     }
 }

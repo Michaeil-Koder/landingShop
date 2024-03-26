@@ -8,7 +8,8 @@ const schema = new mongoose.Schema({
         type: String,
         required: true,
         minLength: 4,
-        maxLength: 15
+        maxLength: 15,
+        unique:true
     },
     covers: {
         type: Array,
@@ -20,12 +21,13 @@ const schema = new mongoose.Schema({
         type: String,
         required: true,
         minLength: 4,
-        maxLength: 20
+        maxLength: 20,
+        unique:true
     },
-    price: {
-        type: Number,
-        required: true,
-    },
+    // price: {
+    //     type: Number,
+    //     required: true,
+    // },
     disCount: {
         type: Number,
         default: 0,
@@ -45,10 +47,10 @@ const schema = new mongoose.Schema({
         ref: "User",
         required: true,
     },
-    remaining: {
-        type: Number,
-        required: true,
-    },
+    // remaining: {
+    //     type: Number,
+    //     required: true,
+    // },
     information: {
         type: Object,
         required: true,

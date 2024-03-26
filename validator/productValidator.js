@@ -1,23 +1,19 @@
-const valid=require("fastest-validator")
-const v=new valid()
-const schema={
+const valid = require("fastest-validator")
+const v = new valid()
+const schema = {
     title: {
         type: "string",
         required: true,
         min: 4,
         max: 15,
-        unique:true
+        unique: true
     },
     href: {
         type: "string",
         required: true,
         min: 4,
         max: 20,
-        unique:true
-    },
-    price: {
-        type: "number",
-        required: true,
+        unique: true
     },
     disCount: {
         type: "number",
@@ -31,10 +27,6 @@ const schema={
         type: "string",
         required: false,
     },
-    remaining: {
-        type: "number",
-        required: true,
-    },
     information: {
         type: "object",
         required: true,
@@ -43,13 +35,9 @@ const schema={
         type: "object",
         required: true,
     },
-    sizes: {
-        type: "object",
-        required: true,
-    },
-    $$strict:"remove"
+    $$strict: true
 }
 
-const check=v.compile(schema)
+const check = v.compile(schema)
 
-module.exports=check
+module.exports = check
