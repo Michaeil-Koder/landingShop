@@ -9,6 +9,10 @@ exports.create = async (req, res) => {
         if (checkColor !== true) {
             return res.status(403).send(checkColor)
         }
+        const HasRepeat=await colorModel.findOne({$and:[{name},{size},{product}]})
+        if (HasRepeat){
+            return res.status(403).send({message:"این رنگ موجود است"})
+        }
         const createREs = (await colorModel.create({name, remaining, price, size, product}))
         res.status(201).send(createREs)
     } catch (err) {

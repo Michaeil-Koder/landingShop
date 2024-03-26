@@ -87,17 +87,20 @@ exports.create = async (req, res) => {
 
 exports.getAll = async (req, res) => {
     try {
-        const findAll=await productModel.find({}).populate([{
-            path:"ColorSize",
-            select:"name remaining price size",
-            populate: {path: "size",select:"name"}
-        },{path:"category",select:"title href"},{path:"creator",select: "name username email"}])
-        if (findAll.length===0){
-            return  res.status(404).send({message:"محصولی یافت نشد"})
+        const findAll = await productModel.find({}).populate([{
+            path: "ColorSize",
+            select: "name remaining price size",
+            populate: {path: "size", select: "name"}
+        }, {path: "category", select: "title href"}, {
+            path: "creator",
+            select: "name username email"
+        }]).sort({_id: -1}).lean()
+        if (findAll.length === 0) {
+            return res.status(404).send({message: "محصولی یافت نشد"})
         }
         res.send(findAll)
     } catch (err) {
-        return res.status(400).send(err.message||{message: "خطایی روی داده است"})
+        return res.status(400).send(err.message || {message: "خطایی روی داده است"})
     }
 }
 
@@ -110,11 +113,35 @@ exports.popularProduct = async (req, res) => {
 }
 exports.RelatedProduct = async (req, res) => {
     try {
-
+        const {href} = req.params
+        const findbyHref = await productModel.findOne({href}).populate([{
+            path: "ColorSize",
+            select: "name remaining price size",
+            populate: {path: "size", select: "name"}
+        }, {path: "category", select: "title href"}, {path: "creator", select: "name username email"}])
+        if (!findbyHref) {
+            return res.status(404).send({message: "این محصول یافت نشد"})
+        }
+        let findRelProduct = await productModel
+            .find()
+            .populate([
+                {
+                    path: "ColorSize",
+                    select: "name remaining price size",
+                    populate: { path: "size", select: "name" }
+                },
+                { path: "category", select: "title href" },
+                { path: "creator", select: "name username email" }
+            ])
+            .lean()
+            .sort({ _id: -1 })
+        findRelProduct = findRelProduct.filter(product => product.category.href === findbyHref.category.href)
+        res.send(findRelProduct)
     } catch (err) {
         return res.status(400).send({message: "خطایی روی داده است"})
     }
 }
+
 exports.remove = async (req, res) => {
     try {
 

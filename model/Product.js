@@ -8,7 +8,7 @@ const schema = new mongoose.Schema({
         type: String,
         required: true,
         minLength: 4,
-        maxLength: 15,
+        maxLength: 40,
         unique:true
     },
     covers: {
@@ -21,7 +21,7 @@ const schema = new mongoose.Schema({
         type: String,
         required: true,
         minLength: 4,
-        maxLength: 20,
+        maxLength: 50,
         unique:true
     },
     // price: {

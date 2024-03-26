@@ -5,14 +5,14 @@ const schema = {
         type: "string",
         required: true,
         min: 4,
-        max: 15,
+        max: 40,
         unique: true
     },
     href: {
         type: "string",
         required: true,
         min: 4,
-        max: 20,
+        max: 50,
         unique: true
     },
     disCount: {
