@@ -11,6 +11,17 @@ const checkTokken = require("../middleware/checkTokken")
 
 Router.route("/create")
     .post(checkTokken,checkId,checkAdmin,uploader({storage,limits:{fileSize:1024*1024*5}}).array("cover"),checkTokken,checkBodyId,productControllers.create)
+Router.route("/getAll")
+    .get(checkTokken,checkId,checkBodyId,checkAdmin,productControllers.getAll)
+
+Router.route("/popular").get(productControllers.popularProduct)
+
+Router.route("/:href/relatedProduct").get(productControllers.RelatedProduct)
+
+Router.route("/:id").delete(checkTokken, checkAdmin, checkId, productControllers.remove)
+
+Router.route("/:href")
+    .get(productControllers.getOne)
 
 
 module.exports = Router

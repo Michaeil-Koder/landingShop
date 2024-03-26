@@ -69,7 +69,7 @@ const schema = new mongoose.Schema({
     },
 }, { toJSON: { virtuals: true }, toObject: { virtuals: true } })
 
-schema.virtual("CommentVirtual", {
+schema.virtual("Comment", {
     localField: "_id",
     ref: "Comment",
     foreignField: "product"

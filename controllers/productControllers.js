@@ -85,7 +85,44 @@ exports.create = async (req, res) => {
     }
 }
 
-exports.balhbalh = async (req, res) => {
+exports.getAll = async (req, res) => {
+    try {
+        const findAll=await productModel.find({}).populate([{
+            path:"ColorSize",
+            select:"name remaining price size",
+            populate: {path: "size",select:"name"}
+        },{path:"category",select:"title href"},{path:"creator",select: "name username email"}])
+        if (findAll.length===0){
+            return  res.status(404).send({message:"محصولی یافت نشد"})
+        }
+        res.send(findAll)
+    } catch (err) {
+        return res.status(400).send(err.message||{message: "خطایی روی داده است"})
+    }
+}
+
+exports.popularProduct = async (req, res) => {
+    try {
+
+    } catch (err) {
+        return res.status(400).send({message: "خطایی روی داده است"})
+    }
+}
+exports.RelatedProduct = async (req, res) => {
+    try {
+
+    } catch (err) {
+        return res.status(400).send({message: "خطایی روی داده است"})
+    }
+}
+exports.remove = async (req, res) => {
+    try {
+
+    } catch (err) {
+        return res.status(400).send({message: "خطایی روی داده است"})
+    }
+}
+exports.getOne = async (req, res) => {
     try {
 
     } catch (err) {
