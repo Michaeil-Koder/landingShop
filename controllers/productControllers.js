@@ -1,9 +1,10 @@
 const productModel = require("../model/Product")
 const colorModel = require("../model/Colors")
-const commentModel=require("../model/Comment")
+const commentModel = require("../model/Comment")
 const moment = require("moment-jalaali")
 
 const productCheck = require("../validator/productValidator")
+const productUpdateCheck = require("../validator/updateProductValidator")
 require("dotenv").config()
 const fsPromises = require('fs').promises;
 const path = require('path');
@@ -143,15 +144,15 @@ exports.RelatedProduct = async (req, res) => {
 
 exports.remove = async (req, res) => {
     try {
-        const {id}=req.params
-        const findProduct=await productModel.findById(id)
-        if (!findProduct){
-            return res.status(404).send({message:"این محصول یافت نشد"})
+        const {id} = req.params
+        const findProduct = await productModel.findById(id)
+        if (!findProduct) {
+            return res.status(404).send({message: "این محصول یافت نشد"})
         }
         await colorModel.deleteMany({product: findProduct._id})
         await commentModel.deleteMany({product: findProduct._id})
         await productModel.findByIdAndDelete(id)
-        res.send({message:"با موفقیت حذف شد"})
+        res.send({message: "با موفقیت حذف شد"})
     } catch (err) {
         return res.status(400).send({message: "خطایی روی داده است"})
     }
@@ -161,5 +162,31 @@ exports.getOne = async (req, res) => {
 
     } catch (err) {
         return res.status(400).send({message: "خطایی روی داده است"})
+    }
+}
+
+exports.update = async (req, res) => {
+    try {
+        const {id} = req.params
+        const {
+            description,
+            information,
+            option
+        } = req.body
+        const check = productUpdateCheck({
+            description,
+            information,
+            option
+        })
+
+        if (Object.keys(option ? option : {}).length === 0 && Object.keys(information ? information : {}).length === 0 && (description ? description : "".length === 0).length === 0) {
+            return res.status(405).send({message: "لطفا مقداری را وارد نمایید"})
+        } else if (check !== true) {
+            return res.status(405).send({message: "لطفا مقادیر را صحیح وارد کنید"})
+        }
+        await productModel.findByIdAndUpdate(id,{description,information,option})
+        res.send({message:"اطلاعات آپدیت شد"})
+    } catch (err) {
+        return res.status(400).send(err || {message: "خطایی روی داده است"})
     }
 }

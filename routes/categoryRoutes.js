@@ -8,7 +8,7 @@ const checkId = require("../middleware/checkId")
 const checkTokken = require("../middleware/checkTokken")
 
 Router.route("/")
-    .get(checkTokken, checkId, checkAdmin, categoryControllers.getAll)
+    .get(categoryControllers.getAll)
 Router.route("/:id")
     .put(checkTokken, checkId, checkAdmin, categoryControllers.update)
 
