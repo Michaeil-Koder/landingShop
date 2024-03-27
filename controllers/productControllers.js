@@ -150,7 +150,7 @@ exports.remove = async (req, res) => {
         }
         await colorModel.deleteMany({product: findProduct._id})
         await commentModel.deleteMany({product: findProduct._id})
-        await productModel.deleteOne({_id:id})
+        await productModel.findByIdAndDelete(id)
         res.send({message:"با موفقیت حذف شد"})
     } catch (err) {
         return res.status(400).send({message: "خطایی روی داده است"})

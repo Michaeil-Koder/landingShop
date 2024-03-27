@@ -35,8 +35,11 @@ const schema = new mongoose.Schema({
         type:String,
         default:"USER"
     },
-    createdAt:{
+    updowngrade:{
         type:String,
+    },
+    createdAt: {
+        type: String,
     },
     updatedAt:{
         type:String,
