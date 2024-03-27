@@ -173,19 +173,22 @@ exports.update = async (req, res) => {
             information,
             option
         } = req.body
+        const findProduct=await productModel.findById(id)
+        if (!findProduct){
+            return res.status(404).send({message:"این محصول یافت نشد"})
+        }
         const check = productUpdateCheck({
             description,
             information,
             option
         })
-
         if (Object.keys(option ? option : {}).length === 0 && Object.keys(information ? information : {}).length === 0 && (description ? description : "".length === 0).length === 0) {
             return res.status(405).send({message: "لطفا مقداری را وارد نمایید"})
         } else if (check !== true) {
             return res.status(405).send({message: "لطفا مقادیر را صحیح وارد کنید"})
         }
-        await productModel.findByIdAndUpdate(id,{description,information,option})
-        res.send({message:"اطلاعات آپدیت شد"})
+        await productModel.findByIdAndUpdate(id, {description, information, option})
+        res.send({message: "اطلاعات آپدیت شد"})
     } catch (err) {
         return res.status(400).send(err || {message: "خطایی روی داده است"})
     }

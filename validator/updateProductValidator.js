@@ -3,15 +3,15 @@ const v = new valid()
 const schema = {
     description: {
         type: "string",
-        required: false,
+        optional:true
     },
     information: {
         type: "object",
-        required: false,
+        optional:true
     },
     option: {
         type: "object",
-        required: false,
+        optional:true
     },
     $$strict: true
 }

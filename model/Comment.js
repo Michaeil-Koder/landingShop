@@ -9,7 +9,7 @@ const schema=new mongoose.Schema({
     },
     creator:{
         type:mongoose.Types.ObjectId,
-        ref:"users",
+        ref:"User",
         required:true
     },
     product:{
@@ -32,13 +32,13 @@ const schema=new mongoose.Schema({
     },
     mainCommentID:{
         type:mongoose.Types.ObjectId,
-        ref:"Comments",
+        ref:"Comment",
         required:false
     },
-    createAt:{
+    createdAt:{
         type:String,
     },
-    updateAt:{
+    updatedAt:{
         type:String,
     },
 })

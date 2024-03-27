@@ -21,6 +21,7 @@ const pageRoutes=require("./routes/pageRoutes")
 const sizeRoutes=require("./routes/sizeRoutes")
 const colorRoutes=require("./routes/colorRoutes")
 const categoryRoutes=require("./routes/categoryRoutes")
+const commentRoutes=require("./routes/commentRoutes")
 
 // main route
 server.use("/",pageRoutes)
@@ -33,6 +34,7 @@ server.use("/landing/product",productRoutes)
 server.use("/landing/size",sizeRoutes)
 server.use("/landing/color",colorRoutes)
 server.use("/landing/category",categoryRoutes)
+server.use("/landing/comment",commentRoutes)
 
 
 // error Handller
