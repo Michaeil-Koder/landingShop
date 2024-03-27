@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/cpsrv63843695850/landingShop/
+    - /bin/cp * $DEPLOYPATH
