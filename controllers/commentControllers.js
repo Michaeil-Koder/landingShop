@@ -42,6 +42,8 @@ exports.newComment = async (req, res) => {
         const findComment = await commentModel.findById(mainCommentID)
         if (!findComment) {
             return res.status(404).send({ message: "این کامنت یافت نشد" })
+        }else if(String(findComment.product)!==product._id){
+            return res.status(404).send({ message: "این کامنت در این محصول یافت نشد" })
         }
         const resCreate = await commentModel.create({
             body,

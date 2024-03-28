@@ -9,7 +9,7 @@ const checkId = require("../middleware/checkId")
 const checkTokken = require("../middleware/checkTokken")
 
 Router.route("/:href")
-    .post(checkTokken,checkId,commentControllers.newComment)
+    .post(checkTokken,checkId,checkBodyId,commentControllers.newComment)
     .get(checkTokken,checkId,checkColeader,commentControllers.getComments)
 
 Router.route("/:id")

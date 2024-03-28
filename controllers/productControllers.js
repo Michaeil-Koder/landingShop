@@ -115,7 +115,7 @@ exports.getAll = async (req, res) => {
 
 exports.popularProduct = async (req, res) => {
     try {
-
+        
     } catch (err) {
         return res.status(400).send({ message: "خطایی روی داده است" })
     }
@@ -195,14 +195,14 @@ exports.getOne = async (req, res) => {
         // comment
         const newComment = []
         for (const comment of findProduct.Comment) {
-            if (!comment.isAnswer && comment) {
+            if (!comment.isAnswer && comment.isAccept) {
                 const allReplies = [];
-                const directReplies = await commentModel.find({ mainCommentID: comment._id }).populate("creator", "name username").lean();
+                const directReplies = await commentModel.find({ mainCommentID: comment._id, isAccept: true }).populate("creator", "name username").lean();
 
                 async function addReplies(reply) {
                     try {
                         allReplies.push(reply);
-                        const subReplies = await commentModel.find({ mainCommentID: reply._id }).populate("creator", "name username").lean();
+                        const subReplies = await commentModel.find({ mainCommentID: reply._id, isAccept: true }).populate("creator", "name username").lean();
                         for (const subReply of subReplies) {
                             await addReplies(subReply);
                         }
