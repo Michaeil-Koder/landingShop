@@ -5,6 +5,7 @@ const moment = require("moment-jalaali")
 const ZarinpalCheckout = require('zarinpal-checkout');
 const zarinpal = ZarinpalCheckout.create('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', true);
 const url = require("url")
+require("dotenv").config()
 
 
 
@@ -28,29 +29,46 @@ exports.finlizeBasket = async (req, res) => {
                 throw new Error(err.message);
             }
         }
-        const findColorProduct = await colorModel.findById(colorID).populate([{
-            path: "size",
-            select: "name"
-        }, {
-            path: "product",
-            select: "title href disCount"
-        }])
-        if (!findColorProduct) {
-            return res.status(404).send({ message: "این رنگ یافت نشد" })
-        } else if (Number > findColorProduct.remaining) {
-            return res.status(405).send({ message: "این تعداد از محصول در انبار موجود نیست" })
+//      findProductColor
+        const findColorProduct=[]
+        for (const id of colorID) {
+            try {
+                const findColor = await colorModel.findById(Object.keys(id)[0]).populate([{
+                    path: "size",
+                    select: "name"
+                }, {
+                    path: "product",
+                    select: "title href disCount"
+                }])
+                if (!findColor) {
+                    return res.status(404).send({ message: "این رنگ یافت نشد" })
+                } else if (Object.values(id)[0] > findColor.remaining) {
+                    return res.status(405).send({ message: `این تعداد رنگ ${findColor.name} از محصول ${findColor.product.title} یافت نشد` })
+                }
+                findColor.price=findColor.price*Object.values(id)
+                findColorProduct.push(findColor)
+            } catch (err) {
+                return new Error(err.message);
+            }
         }
+//      Total price For pay
+        let TotalPrice=0
+        findColorProduct.forEach(product=>{
+            TotalPrice+=product.price
+        })
         const paymentRequest = {
-            Amount: findColorProduct.price * Number,
-            CallbackURL: 'http://localhost:5000/landing/basket/payVerification',
-            Description: 'پرداخت آزمایشی',
+            Amount: TotalPrice,
+            CallbackURL: `${process.env.BASE_URL}/landing/basket/payVerification`,
             Email,
             Mobile,
         };
         const createPay = await zarinpal.PaymentRequest(paymentRequest)
-
+        
         if (createPay.status === 100) {
+            await basketModel.create({TotalPrice,createPay})
             res.redirect(createPay.url)
+        }else{
+            throw new Error(createPay)
         }
     } catch (err) {
         return res.status(400).send(err.message || { message: "خطایی روی داده است" })

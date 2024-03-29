@@ -3,23 +3,15 @@ require("dotenv").config()
 mongoose.connect(process.env.url)
 
 const schema=new mongoose.Schema({
-    product:{
-        type:mongoose.Types.ObjectId,
-        ref:"Product"
-    },
-    number:{
+    TotalPrice:{
         type:Number,
+        required:true
+    },
+    createPay:{
+        type:Object,
         required:true,
-        minLength:1,
-        maxLength:5
     },
-    createdAt:{
-        type:String,
-    },
-    updatedAt:{
-        type:String,
-    },
-})
+},{timestamps:true})
 
 
 const model=mongoose.model("Basket",schema)
