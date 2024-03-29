@@ -11,18 +11,20 @@ const checkId = require("../middleware/checkId")
 const checkTokken = require("../middleware/checkTokken")
 
 
-Router.route("/product/:id/addBasket")
-    .post(checkTokken, checkId, basketControllers.addToBasket)
+Router.route("/finlizeBasket")
+    .post(checkTokken, checkId, checkBodyId ,basketControllers.finlizeBasket)
+Router.route("/payVerification")//test for pay
+    .get(basketControllers.payVerification)
 
 Router.route("/:id")
     .delete(checkTokken, checkId, basketControllers.remove)
     .put(checkTokken, checkId, basketControllers.edit)
 
-Router.route("/")
-    .get(checkTokken, basketControllers.getBasket)
+Router.route("/order")
+    .get(checkTokken, basketControllers.getOrder)
 
-Router.route("/getAllBasket")
-    .get(checkTokken, checkId, checkColeader, basketControllers.getAllBasket)
+Router.route("/getAll")
+    .get(checkTokken, checkId, checkColeader, basketControllers.getAll)
 
     Router.route("/user/:id")
     .get(checkTokken,checkId,checkColeader,basketControllers.getUserBasket)
