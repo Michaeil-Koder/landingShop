@@ -7,10 +7,24 @@ const schema=new mongoose.Schema({
         type:Number,
         required:true
     },
+    Email:{
+        type:String,
+    },
+    Mobile:{
+        type:String,
+    },
     createPay:{
         type:Object,
         required:true,
     },
+    Order:{
+        type:Array,
+        required:true,
+    },
+    RefID:{
+        type:Number,
+        default:12345678
+    }
 },{timestamps:true})
 
 
