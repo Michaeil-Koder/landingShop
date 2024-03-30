@@ -13,6 +13,14 @@ const schema=new mongoose.Schema({
     Mobile:{
         type:String,
     },
+    creator:{
+        type:mongoose.Types.ObjectId,
+        ref:"User",
+    },
+    status:{
+        type:String,
+        default:"paid"
+    },
     createPay:{
         type:Object,
         required:true,

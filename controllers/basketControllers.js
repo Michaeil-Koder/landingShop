@@ -12,7 +12,7 @@ require("dotenv").config()
 
 exports.finlizeBasket = async (req, res) => {
     try {
-        const { colorID, Email, Mobile } = req.body
+        const { colorID, user } = req.body
         if (colorID === undefined || colorID.length === 0) {
             return res.status(405).send({ message: "لطفا آیدی رنگ را وارد کنید" })
         }
@@ -60,12 +60,12 @@ exports.finlizeBasket = async (req, res) => {
             Amount: TotalPrice,
             CallbackURL: `${process.env.BASE_URL}/landing/basket/payVerification`,
             Description: 'A Payment from Node.JS',
-            Email,
-            Mobile,
+            Email:user.email,
+            Mobile:user.phone,
         };
         const createPay = await zarinpal.PaymentRequest(paymentRequest)
         if (createPay.status === 100) {
-            await basketModel.create({ TotalPrice, createPay, Order: colorID })
+            await basketModel.create({ TotalPrice, createPay, Order: colorID ,creator:user._id})
             res.redirect(createPay.url)
         } else {
             throw new Error(createPay)
@@ -91,17 +91,19 @@ exports.payVerification = async (req, res) => {
             await basketModel.deleteOne({ _id: findOrder._id })
             return res.status(400).send({ message: "مشکلی در پرداخت وجود دارد در صورت کسر وجه مبلغ پرداختی تا 72 ساعت به حساب بر میگردد" })
         }
-        
-        findOrder.Order.forEach(async(order)=>{
-            try{
-                const findColor=await colorModel.findByIdAndUpdate(Object.keys(order),{$inc:{remaining:-(Object.values(order))},updatedAt:new Date(),RefID:payVerifi.RefID})
-            }catch(err){
-                return res.status(400).send({message:"خطایی وجود دارد"})
+
+        findOrder.Order.forEach(async (order) => {
+            try {
+                const findColor = await colorModel.findByIdAndUpdate(Object.keys(order), { $inc: { remaining: -(Object.values(order)) }, updatedAt: new Date(), RefID: payVerifi.RefID })
+            } catch (err) {
+                return res.status(400).send({ message: "خطایی وجود دارد" })
             }
         })
 
-        res.status(201).send({message:`پرداخت شما با موفقیت انجام شد.
-        کد پیگیری شما ${payVerifi.RefID}`})
+        res.status(201).send({
+            RefID:payVerifi.RefID,
+            id:findOrder._id
+        })
 
     } catch (err) {
         return res.status(400 || err.status).send(err.message || { message: "خطایی روی داده است" })
@@ -111,8 +113,31 @@ exports.payVerification = async (req, res) => {
 
 
 
-exports.remove = async (req, res) => {
+exports.CancelOrder = async (req, res) => {
     try {
+        const {id}=req.params
+        const findBasket=await basketModel.findById(id)
+        if(!findBasket){
+            return res.status(404).send({message:"Basket Not Found"})
+        }else if(Date.parse(findBasket.createdAt)+(24*60*60*1000)<new Date()){
+            return res.status(403).send({message:"مهلت شما برای لغو تمام شده است"})
+        }
+
+        findBasket.Order.forEach(async (order) => {
+            try {
+                const findColor = await colorModel.findByIdAndUpdate(Object.keys(order), { $inc: { remaining: +(Object.values(order)) }, updatedAt: new Date()})
+                if(!findColor){
+                    return res.status(404).send({message:"Tihs Product Not Found"})
+                }
+            } catch (err) {
+                return res.status(400).send({ message: "خطایی وجود دارد" })
+            }
+        })
+
+        await basketModel.updateOne({_id:id},{status:"cancel",updatedAt:new Date()})
+
+        return res.status(200).send({message:"سفارش لغو شد مبلغ پرداختی به حساب شما تا 24 ساعت برمیگردد"})
+
 
     } catch (err) {
         return res.status(400 || err.status).send(err.message || { message: "خطایی روی داده است" })
