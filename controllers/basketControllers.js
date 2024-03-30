@@ -121,6 +121,8 @@ exports.CancelOrder = async (req, res) => {
             return res.status(404).send({message:"Basket Not Found"})
         }else if(Date.parse(findBasket.createdAt)+(24*60*60*1000)<new Date()){
             return res.status(403).send({message:"مهلت شما برای لغو تمام شده است"})
+        }else if(findBasket.status==="cancel"){
+            return res.status(403).send({message:"سفارش قبلا لغو شده است"})
         }
 
         findBasket.Order.forEach(async (order) => {
